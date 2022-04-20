@@ -1,0 +1,11 @@
+{
+  "name": "auth0-blazor-prototype",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "tail": "npx tailwindcss -i ./Styles/app.css -o ./wwwroot/app.css --watch"
+  },
+  "author": "",
+  "license": "ISC"
+}
