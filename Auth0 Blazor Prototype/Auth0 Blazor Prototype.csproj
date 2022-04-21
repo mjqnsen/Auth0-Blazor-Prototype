@@ -16,4 +16,8 @@
       <Folder Include="wwwroot\css" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.0.1" />
+    </ItemGroup>
+
 </Project>

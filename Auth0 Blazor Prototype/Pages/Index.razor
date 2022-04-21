@@ -1,17 +1,64 @@
 @page "/"
+@inject AuthenticationStateProvider AuthState
 
 <PageTitle>Index</PageTitle>
 
 <div class="grid grid-flow-col grid-cols-10 h-full gap-6">
-    <div class="rounded-lg bg-gray-200 col-span-8">
-    </div>
-
-    <div class="bg-gray-200 rounded-lg col-span-2">
-        <div class="grid-flow-row grid gap-4 m-5">
-            <div class="bg-gray-100 h-10 rounded-md"></div>
-            <div class="bg-gray-100 h-80 rounded-md"></div>
-            <div class="bg-gray-100 h-10 rounded-md"></div>
-            <div class="bg-gray-100 h-64 rounded-md"></div>
+    <CascadingAuthenticationState>
+        <div class="rounded-lg bg-gray-200 col-span-8 p-4">
+            <AuthorizeView>
+                <Authorized>
+                    <h1 class="text-2xl font-bold text-gray-700">Welcome, @Username!</h1>
+                </Authorized>
+                <NotAuthorized>
+                    <h1 class="text-2xl font-bold text-gray-700">Hi, Signup or login to continue.</h1>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
-    </div>
+
+        <div class="bg-gray-200 rounded-lg col-span-2">
+            <div class="grid-flow-row grid gap-4 m-5">
+                <div class="bg-gray-100 rounded-md min-h-10 grid justify-center gap-1 justify-items-center py-4">
+                    <AuthorizeView>
+                        <Authorized>
+                            <img class="rounded-full h-20" src="@Picture" alt="Profile_picture">
+                            <div>
+                                <span>Role: </span>
+                                <span class="font-bold">@Role..</span>
+                            </div>
+                        </Authorized>
+                    </AuthorizeView>
+                </div>
+                <div class="bg-gray-100 h-80 rounded-md"></div>
+                <div class="bg-gray-100 h-10 rounded-md"></div>
+                <div class="bg-gray-100 h-64 rounded-md"></div>
+            </div>
+        </div>
+    </CascadingAuthenticationState>
 </div>
+
+@code {
+    private string Username = "Anonymous User";
+    private string Picture = "";
+    private string Role = "User";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthState.GetAuthenticationStateAsync();
+
+        Username = state.User.Identity.Name ?? string.Empty;
+
+        Picture = state.User.Claims
+            .Where(c => c.Type.Equals("picture"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+        
+        Role = state.User.Claims
+            .Where(c => c.Type.Equals("role"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+        await base.OnInitializedAsync();
+    }
+
+}
