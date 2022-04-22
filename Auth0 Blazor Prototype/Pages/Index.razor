@@ -24,12 +24,23 @@
                             <img class="rounded-full h-20" src="@Picture" alt="Profile_picture">
                             <div>
                                 <span>Role: </span>
-                                <span class="font-bold">@Role..</span>
+                                <span class="font-bold">@Role</span>
                             </div>
                         </Authorized>
                     </AuthorizeView>
                 </div>
-                <div class="bg-gray-100 h-80 rounded-md"></div>
+                <div class="bg-gray-100 h-80 rounded-md p-2">
+                    <AuthorizeView>
+                        <Authorized>
+                            @if (Role.Equals("admin"))
+                            {
+                                <span>You can only see this as admin</span>
+
+                            }
+                        </Authorized>
+                    </AuthorizeView>
+
+                </div>
                 <div class="bg-gray-100 h-10 rounded-md"></div>
                 <div class="bg-gray-100 h-64 rounded-md"></div>
             </div>
@@ -40,7 +51,7 @@
 @code {
     private string Username = "Anonymous User";
     private string Picture = "";
-    private string Role = "User";
+    private string Role = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,9 +63,9 @@
             .Where(c => c.Type.Equals("picture"))
             .Select(c => c.Value)
             .FirstOrDefault() ?? string.Empty;
-        
+
         Role = state.User.Claims
-            .Where(c => c.Type.Equals("role"))
+            .Where(c => c.Type.Contains("role"))
             .Select(c => c.Value)
             .FirstOrDefault() ?? string.Empty;
 
